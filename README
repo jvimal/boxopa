@@ -1,0 +1,19 @@
+Box.app is a simple file sharing app.
+
+Users can easily create a new box just by visiting
+the homepage.  Inside their box, users can upload whatever
+files they want, which will instantly be available to all
+viewers of the page!  Users can also easily delete their
+files.  No login necessary.
+
+Instructions
+
+1. Compile:
+    opa box.opa
+
+2. Run!
+    ./box.exe
+    Visit: localhost:8080
+
+Would love any feedback.
+

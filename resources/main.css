@@ -1,0 +1,18 @@
+
+#error {
+  color: #CC0000;
+}
+
+#content {
+  width: 550px;
+  margin: 0 auto;
+  border: 1px solid #AEBDCC;
+  background-color: #F3F5F7;
+  padding: 10px;
+  text-align: center;
+}
+
+#perm {
+  width: 200px;
+}
+
