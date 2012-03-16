@@ -24,19 +24,16 @@ type Box = { files: list(File) }
 db /box: stringmap(Box)
 db /box[_] = { files = [] }
 
-@server
+@server_private
 hostname() = "http://localhost:8080"
 
-@server
 get_file_info(f: File) =
   { name = f.name;
     mimetype = f.mimetype; 
     id = f.id }
 
-@server
 box_url(id) = "{hostname()}/box/{id}"
 
-@server
 index_page() = 
 (
   id = Random.string(8)
@@ -46,20 +43,20 @@ index_page() =
         <h1>Welcome</h1>
         <a href="/box/{id}"><img src="http://i.imgur.com/WBbSg.png"/></a>
         <h3>Your box has been created.  Click <a href="/box/{id}">the box</a> to open it!</h3>
-        <input type="text" id="perm" value="{box_url(id)}" onclick="this.select();" />
+		       <input type="text" id="perm" value="{box_url(id)}" onclick={_ -> Dom.select(#perm)} />
       </div>
     </body>
   )
 )
 
-@server
+@server_private
 create_file(bid, f) =
 (
   do /box[bid]/files <- List.add(f, /box[bid]/files);
   void
 )
 
-@server
+@server_private
 delete_file(bid, id) =
 (
   files = /box[bid]/files
@@ -69,12 +66,10 @@ delete_file(bid, id) =
   Network.broadcast(info, room)
 )
 
-@server
 get_image(m) =
   if String.has_prefix("image", m) then "http://i.imgur.com/wCvgr.png"
   else "http://i.imgur.com/qDkLr.png"
 
-@server
 show_file(box, f) =
 (
   <div class="span3" id="{f.id}" style="padding-top: 50px;">
@@ -84,7 +79,7 @@ show_file(box, f) =
   </div>
 )
 
-@server
+@server_private
 process_upload(bid,upload_data) =
 (
   up_file = StringMap.get("upload", upload_data.uploaded_files)
@@ -140,7 +135,7 @@ files_update(boxid, f: FileInfo) =
     Dom.remove(#{f.id})
 
 
-@server
+@server_private
 show_box(path) = 
 (
   b = /box[path]
@@ -154,7 +149,7 @@ show_box(path) =
         <h3>Click the file icon to download the file.</h3>
         <h3>Anyone with this box's URL will be able to download these files!</h3>
         <h3>Copy the URL and share with friends!</h3>
-        <input type="text" id="perm" value="{box_url(path)}" onclick="this.select();" />
+		       <input type="text" id="perm" value="{box_url(path)}" onclick={_ -> Dom.select(#perm)} />
         <p>All viewers of this page will see the files the instant they are uploaded.</p>
         <div class="row" id="files">
           {List.map(show_file(path,_), finfo)}
@@ -186,7 +181,6 @@ deliver_assets(lst) =
       )
     | _ -> do_404()
 
-@server
 start(uri) = (
   match uri with
     | {path = {nil} ...} -> index_page()
